@@ -74,7 +74,7 @@ jobs:
                 cli_config_credentials_token: ${{ secrets.TF_API_KEY }}
 
 
-            - name: Test configuration
+            - name: Generate Prod Plan
               run: |
                 #terraform login
                 terraform init
@@ -108,7 +108,7 @@ jobs:
                   name: tfplan
                   path: ./downloaded-tfplan
 
-            - name: Test configuration
+            - name: Deploy Prod Configuration
               run: |
                 #terraform login
                 terraform init
