@@ -20,3 +20,12 @@ module "ssh-key" {
   ssh_user_public_key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIM3epJWkP6zxtbJcCaPTG+4UCklkJ7rb1uQ/9Xq7y0L"
   ssh_algorithm       = "ED25519"
 }
+
+module "vpc" {
+  source = "./modules/vpc"
+
+  name = "test"
+  region = "fra1"
+  description = "This is a test VPC"
+  base_cidr = "10.20.0.0/16"
+}
