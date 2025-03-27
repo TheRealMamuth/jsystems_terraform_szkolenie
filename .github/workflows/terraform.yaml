@@ -1,0 +1,108 @@
+name: "Szkolenie Terraform Wspolny kod"
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+    pull_request:
+        branches:
+            - main
+
+jobs:
+    terraform_validation:
+        if: github.event_name == 'pull_request'
+        name: "Terraform Validation an fmt"
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+              with:
+                terraform_version: 1.9.8
+
+            - name: Terraform fmt
+              run: |
+                terraform -version
+                terraform fmt -check
+                terraform init -backend=false
+                terraform validate 
+    #terraform_plan:
+    terraform_apply_dev:
+        # backend local
+        if: github.event_name == 'pull_request'
+        name: "Test build for Development"
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+              with:
+                terraform_version: 1.9.8
+
+            - name: Test configuration
+              run: |
+                # Usuwamy nasz backend produkcyjny by testowac na dev
+                rm backend.tf
+                terraform init
+                terraform plan -out=tfplan
+                terraform apply -auto-approve tfplan
+            
+            - name: Destroy resources
+              run: |
+                terraform plan -destroy -out=tfplan-destroy
+                terraform apply tfplan-destroy
+
+    terraform_plan_prod:
+        # backen terraform cloud
+        if: github.ref == 'refs/heads/main'
+        name: "Deploy to Production"
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+              with:
+                terraform_version: 1.9.8
+
+            - name: Test configuration
+              run: |
+                # Usuwamy nasz backend produkcyjny by testowac na dev
+                terraform init
+                terraform plan -out=tfplan
+
+            - name: "Upload plan"
+              uses: actions/upload-artifact@v4
+              with:
+                  name: tfplan
+                  path: tfplan
+
+    terraform_apply_prod:
+        # backen terraform cloud
+        if: github.ref == 'refs/heads/main'
+        name: "Deploy to Production"
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Terraform
+              uses: hashicorp/setup-terraform@v3
+              with:
+                terraform_version: 1.9.8
+
+            - name: "Download plan"
+              uses: actions/download-artifact@v4
+              with:
+                  name: tfplan
+                  path: ./downloaded-tfplan
+
+            - name: Test configuration
+              run: |
+                terraform apply -auto-approve ./downloaded-tfplan/tfplan
