@@ -7,23 +7,23 @@ resource "digitalocean_firewall" "web" {
   inbound_rule {
     protocol         = "tcp"
     port_range       = "22"
-    source_addresses = ["0.0.0.0/0", "::/0"]
+    source_addresses = var.source_addresses
   }
 
   inbound_rule {
     protocol         = "icmp"
-    source_addresses = ["0.0.0.0/0", "::/0"]
+    source_addresses = var.source_addresses
   }
 
   outbound_rule {
     protocol              = "tcp"
     port_range            = "0-65535"
-    destination_addresses = ["0.0.0.0/0", "::/0"]
+    destination_addresses = var.source_addresses
   }
 
   outbound_rule {
     protocol              = "udp"
     port_range            = "0-65535"
-    destination_addresses = ["0.0.0.0/0", "::/0"]
+    destination_addresses = var.source_addresses
   }
 }
