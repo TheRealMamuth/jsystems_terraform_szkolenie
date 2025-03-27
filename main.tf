@@ -6,11 +6,11 @@
 #}
 
 module "project" {
-    source = "./modules/project"
-    project_name = "group_project"
-    description = "This is a group project"
-    environment = "Development"
-    project_resources = [module.vm.vm_urn]
+  source            = "./modules/project"
+  project_name      = "group_project"
+  description       = "This is a group project"
+  environment       = "Development"
+  project_resources = [module.vm.vm_urn]
 }
 
 module "ssh-key" {
@@ -24,17 +24,17 @@ module "ssh-key" {
 module "vpc" {
   source = "./modules/vpc"
 
-  name = "test"
-  region = "fra1"
+  name        = "test"
+  region      = "fra1"
   description = "This is a test VPC"
-  base_cidr = "10.20.0.0/16"
+  base_cidr   = "10.20.0.0/16"
 }
 
 module "vm" {
   source = "./modules/vm"
 
-  name = "vm-1"
-  region = "fra1"
+  name     = "vm-1"
+  region   = "fra1"
   vpc_uuid = module.vpc.id
   ssh_keys = [module.ssh-key.ssh_key_gen_id, module.ssh-key.ssh_key_user_id]
 }
