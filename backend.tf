@@ -1,10 +1,10 @@
-terraform { 
-  cloud { 
-    
-    organization = "Warsztaty_wspolne" 
+terraform {
+  cloud {
 
-    workspaces { 
-      name = "warsztaty_wspolne" 
-    } 
-  } 
+    organization = "Warsztaty_wspolne"
+
+    workspaces {
+      name = "warsztaty_wspolne"
+    }
+  }
 }
