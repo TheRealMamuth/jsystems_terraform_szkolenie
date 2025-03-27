@@ -112,4 +112,5 @@ jobs:
             - name: Test configuration
               run: |
                 #terraform login
+                terraform init
                 terraform apply -auto-approve ./downloaded-tfplan/tfplan
