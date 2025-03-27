@@ -37,5 +37,8 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_environment"></a> [environment](#output\_environment) | The environment of the project |
+| <a name="output_project_name"></a> [project\_name](#output\_project\_name) | The name of the project |
 <!-- END_TF_DOCS -->
