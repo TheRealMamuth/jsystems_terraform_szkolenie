@@ -32,6 +32,7 @@ jobs:
     #terraform_plan:
     terraform_apply_dev:
         # backend local
+        needs: terraform_validation
         if: github.event_name == 'pull_request'
         name: "Test build for Development"
         runs-on: ubuntu-latest
@@ -60,7 +61,7 @@ jobs:
     terraform_plan_prod:
         # backen terraform cloud
         if: github.ref == 'refs/heads/main'
-        name: "Deploy to Production"
+        name: "Plan Production"
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
@@ -70,11 +71,12 @@ jobs:
               uses: hashicorp/setup-terraform@v3
               with:
                 terraform_version: 1.9.8
-                cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+                cli_config_credentials_token: ${{ secrets.TF_API_KEY }}
+
 
             - name: Test configuration
               run: |
-                # Usuwamy nasz backend produkcyjny by testowac na dev
+                #terraform login
                 terraform init
                 terraform plan -out=tfplan -input=false -var="do_token=${{ secrets.TF_API_DO }}"
 
@@ -85,6 +87,7 @@ jobs:
                   path: tfplan
 
     terraform_apply_prod:
+        needs: terraform_plan_prod
         # backen terraform cloud
         if: github.ref == 'refs/heads/main'
         name: "Deploy to Production"
@@ -97,7 +100,7 @@ jobs:
               uses: hashicorp/setup-terraform@v3
               with:
                 terraform_version: 1.9.8
-                cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+                cli_config_credentials_token: ${{ secrets.TF_API_KEY }}
 
             - name: "Download plan"
               uses: actions/download-artifact@v4
@@ -107,4 +110,5 @@ jobs:
 
             - name: Test configuration
               run: |
+                #terraform login
                 terraform apply -auto-approve ./downloaded-tfplan/tfplan
