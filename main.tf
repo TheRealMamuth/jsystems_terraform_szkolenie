@@ -29,3 +29,12 @@ module "vpc" {
   description = "This is a test VPC"
   base_cidr = "10.20.0.0/16"
 }
+
+module "vm" {
+  source = "./modules/vm"
+
+  name = "vm-1"
+  region = "fra1"
+  vpc_uuid = module.vpc.id
+  ssh_keys = [module.ssh-key.ssh_key_gen_id, module.ssh-key.ssh_key_user_id]
+}
