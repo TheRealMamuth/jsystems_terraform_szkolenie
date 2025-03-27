@@ -10,7 +10,7 @@ module "project" {
     project_name = "group_project"
     description = "This is a group project"
     environment = "Development"
-    project_resources = []
+    project_resources = [module.vpc.urn]
 }
 
 module "ssh-key" {
