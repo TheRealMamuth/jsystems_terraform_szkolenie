@@ -7,4 +7,5 @@
 module "ssh-key" {
   source = "./modules/ssh-key"
 
+  ssh_user_public_key = "example-value"
 }
