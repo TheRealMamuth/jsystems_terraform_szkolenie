@@ -12,18 +12,19 @@ resource "digitalocean_firewall" "web" {
 
   inbound_rule {
     protocol         = "icmp"
+    port_range       = "22"
     source_addresses = var.source_addresses
   }
 
   outbound_rule {
     protocol              = "tcp"
-    port_range            = "0-65535"
+    port_range            = "1-65535"
     destination_addresses = var.source_addresses
   }
 
   outbound_rule {
     protocol              = "udp"
-    port_range            = "0-65535"
+    port_range            = "1-65535"
     destination_addresses = var.source_addresses
   }
 }
