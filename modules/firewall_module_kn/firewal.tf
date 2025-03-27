@@ -16,11 +16,6 @@ resource "digitalocean_firewall" "web" {
   }
 
   outbound_rule {
-    protocol              = "icmp"
-    destination_addresses = ["0.0.0.0/0", "::/0"]
-  }
-
-  outbound_rule {
     protocol              = "tcp"
     port_range            = "0-65535"
     destination_addresses = ["0.0.0.0/0", "::/0"]
