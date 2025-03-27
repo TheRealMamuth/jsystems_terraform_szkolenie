@@ -6,11 +6,11 @@
 #}
 
 module "project" {
-    source = "./modules/project"
-    project_name = "group_project"
-    description = "This is a group project"
-    environment = "Development"
-    project_resources = []
+  source            = "./modules/project"
+  project_name      = "group_project"
+  description       = "This is a group project"
+  environment       = "Development"
+  project_resources = []
 
 }
 
@@ -24,7 +24,7 @@ module "ssh-key" {
 
 
 module "domain" {
-  source       = "./modules/domain"
-  zone_name    = "szkolenie.aws.tf"
-  droplet_ips  = module.droplets.droplet_ips
+  source      = "./modules/domain"
+  zone_name   = "szkolenie.aws.tf"
+  droplet_ips = module.droplets.droplet_ips
 }
