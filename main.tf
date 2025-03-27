@@ -9,6 +9,7 @@ module "domain" {
   source       = "./modules/domain"
   zone_name    = "szkolenie.aws.tf"
   droplet_ips  = module.droplets.droplet_ips
+}
 
 module "ssh-key" {
   source = "./modules/ssh-key"
