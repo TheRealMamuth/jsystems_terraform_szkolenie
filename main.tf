@@ -7,8 +7,7 @@
 
 module "domain" {
   source       = "./modules/domain"
-  zone_name    = "test.com"
-  zone_id      = aws_route53_zone.main.zone_id
+  zone_name    = "szkolenie.aws.tf"
   droplet_ips  = module.droplets.droplet_ips
 
 module "ssh-key" {

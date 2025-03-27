@@ -3,11 +3,6 @@ variable "zone_name" {
   description = "Nazwa domeny"
 }
 
-variable "zone_id" {
-  description = "ID Zone"
-  type        = string
-}
-
 
 variable "droplet_ips" {
   type        = map(string)
