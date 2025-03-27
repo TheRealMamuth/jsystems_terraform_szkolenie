@@ -32,6 +32,7 @@ jobs:
     #terraform_plan:
     terraform_apply_dev:
         # backend local
+        needs: terraform_validation
         if: github.event_name == 'pull_request'
         name: "Test build for Development"
         runs-on: ubuntu-latest
@@ -85,6 +86,7 @@ jobs:
                   path: tfplan
 
     terraform_apply_prod:
+        needs: terraform_plan_prod
         # backen terraform cloud
         if: github.ref == 'refs/heads/main'
         name: "Deploy to Production"
