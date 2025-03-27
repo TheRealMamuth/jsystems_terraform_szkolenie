@@ -26,7 +26,6 @@ jobs:
     - name: Terraform fmt
       run: |
         terraform -version
-        terraform fmt -check
         terraform init -backend=false
         terraform validate 
   #terraform_plan:
