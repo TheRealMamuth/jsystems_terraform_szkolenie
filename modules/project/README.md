@@ -33,7 +33,7 @@ No modules.
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment of the project | `string` | `"Development"` | no |
 | <a name="input_project_name"></a> [project\_name](#input\_project\_name) | The name of the project | `string` | n/a | yes |
 | <a name="input_project_purpose"></a> [project\_purpose](#input\_project\_purpose) | The purpose of the project | `string` | `"Group project for testing purposes"` | no |
-| <a name="input_project_resources"></a> [project\_resources](#input\_project\_resources) | URN of the resources to be added to the project | `string` | n/a | yes |
+| <a name="input_project_resources"></a> [project\_resources](#input\_project\_resources) | URN of the resources to be added to the project | `list` | `[]` | no |
 
 ## Outputs
 

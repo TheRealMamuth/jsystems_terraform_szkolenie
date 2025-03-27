@@ -3,7 +3,7 @@ resource "digitalocean_project" "project" {
     purpose     = var.project_purpose
     description = var.description
     environment = var.environment
-    # resources   = var.project_resources
+    resources   = var.project_resources
 }
 
 resource "random_string" "random_project_name" {

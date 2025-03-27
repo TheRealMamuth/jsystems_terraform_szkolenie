@@ -23,7 +23,8 @@ variable "environment" {
 
 variable "project_resources" {
     description = "URN of the resources to be added to the project"
-    type        = string
+    type        = list
+    default = []
 #     validation {
 #         condition     = can(regex("^digitalocean_droplet\\.[a-zA-Z0-9_-]+\\.urn$", var.project_resources))
 #         error_message = "The project_resources variable must be a valid URN in the format 'digitalocean_droplet.<name>.urn'."
