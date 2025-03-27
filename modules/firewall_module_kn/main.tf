@@ -12,7 +12,6 @@ resource "digitalocean_firewall" "web" {
 
   inbound_rule {
     protocol         = "icmp"
-    port_range       = "22"
     source_addresses = var.source_addresses
   }
 
