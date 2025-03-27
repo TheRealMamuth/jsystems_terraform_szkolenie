@@ -78,7 +78,7 @@ jobs:
               run: |
                 #terraform login
                 terraform init
-                terraform plan -out=tfplan -input=false -var="do_token=${{ secrets.TF_API_DO }}" -var="ak=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="sk=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var="at=${{ secrets.AWS_SESSION_TOKEN }}"
+                terraform plan -destroy -out=tfplan -input=false -var="do_token=${{ secrets.TF_API_DO }}" -var="ak=${{ secrets.AWS_ACCESS_KEY_ID }}" -var="sk=${{ secrets.AWS_SECRET_ACCESS_KEY }}" -var="at=${{ secrets.AWS_SESSION_TOKEN }}"
 
             - name: "Upload plan"
               uses: actions/upload-artifact@v4
