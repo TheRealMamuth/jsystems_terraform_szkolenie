@@ -49,12 +49,12 @@ jobs:
                 # Usuwamy nasz backend produkcyjny by testowac na dev
                 rm backend.tf
                 terraform init
-                terraform plan -out=tfplan
-                terraform apply -auto-approve tfplan
+                terraform plan -out=tfplan -input=false -var=${{ secrets.TF_API_DO }}
+                terraform apply tfplan
             
             - name: Destroy resources
               run: |
-                terraform plan -destroy -out=tfplan-destroy
+                terraform plan -destroy -out=tfplan-destroy -input=false -var=${{ secrets.TF_API_DO }}
                 terraform apply tfplan-destroy
 
     terraform_plan_prod:
@@ -76,7 +76,7 @@ jobs:
               run: |
                 # Usuwamy nasz backend produkcyjny by testowac na dev
                 terraform init
-                terraform plan -out=tfplan
+                terraform plan -out=tfplan -input=false -var=${{ secrets.TF_API_DO }}
 
             - name: "Upload plan"
               uses: actions/upload-artifact@v4
