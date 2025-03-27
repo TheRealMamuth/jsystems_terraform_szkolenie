@@ -1,7 +1,7 @@
 resource "digitalocean_firewall" "web" {
   name = "FW-all-out-22-in"
 
-  droplet_ids  = var.droplet_ids
+  droplet_ids = var.droplet_ids
 
 
   inbound_rule {
