@@ -1,115 +1,114 @@
 name: "Szkolenie Terraform Wspolny kod"
 
 on:
-    workflow_dispatch:
-    push:
-        branches:
-            - main
-    pull_request:
-        branches:
-            - main
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
 
 jobs:
-    terraform_validation:
-        if: github.event_name == 'pull_request'
-        name: "Terraform Validation an fmt"
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+  terraform_validation:
+    if: github.event_name == 'pull_request'
+    name: "Terraform Validation an fmt"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-            - name: Setup Terraform
-              uses: hashicorp/setup-terraform@v3
-              with:
-                terraform_version: 1.9.8
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.11.3
 
-            - name: Terraform fmt
-              run: |
-                terraform -version
-                terraform fmt -check
-                terraform init -backend=false
-                terraform validate 
-    #terraform_plan:
-    terraform_apply_dev:
-        # backend local
-        needs: terraform_validation
-        if: github.event_name == 'pull_request'
-        name: "Test build for Development"
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+    - name: Terraform fmt
+      run: |
+        terraform -version
+        terraform fmt -check
+        terraform init -backend=false
+        terraform validate 
+  #terraform_plan:
+  terraform_apply_dev:
+    # backend local
+    needs: terraform_validation
+    if: github.event_name == 'pull_request'
+    name: "Test build for Development"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-            - name: Setup Terraform
-              uses: hashicorp/setup-terraform@v3
-              with:
-                terraform_version: 1.11.3
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.11.3
 
-            - name: Test configuration
-              run: |
-                # Usuwamy nasz backend produkcyjny by testowac na dev
-                rm backend.tf
-                terraform init
-                terraform plan -out=tfplan -input=false -var="do_token=${{ secrets.TF_API_DO }}"
-                terraform apply tfplan
-            
-            - name: Destroy resources
-              run: |
-                terraform plan -destroy -out=tfplan-destroy -input=false -var="do_token=${{ secrets.TF_API_DO }}"
-                terraform apply tfplan-destroy
+    - name: Test configuration
+      run: |
+        # Usuwamy nasz backend produkcyjny by testowac na dev
+        rm backend.tf
+        terraform init
+        terraform plan -out=tfplan -input=false -var="do_token=${{ secrets.TF_API_DO }}"
+        terraform apply tfplan
 
-    terraform_plan_prod:
-        # backen terraform cloud
-        if: github.ref == 'refs/heads/main'
-        name: "Plan Production"
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+    - name: Destroy resources
+      run: |
+        terraform plan -destroy -out=tfplan-destroy -input=false -var="do_token=${{ secrets.TF_API_DO }}"
+        terraform apply tfplan-destroy
 
-            - name: Setup Terraform
-              uses: hashicorp/setup-terraform@v3
-              with:
-                terraform_version: 1.9.8
-                cli_config_credentials_token: ${{ secrets.TF_API_KEY }}
+  terraform_plan_prod:
+    # backen terraform cloud
+    if: github.ref == 'refs/heads/main'
+    name: "Plan Production"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.9.8
+        cli_config_credentials_token: ${{ secrets.TF_API_KEY }}
 
-            - name: Generate Prod Plan
-              run: |
-                #terraform login
-                terraform init
-                terraform plan -out=tfplan -input=false -var="do_token=${{ secrets.TF_API_DO }}"
+    - name: Generate Prod Plan
+      run: |
+        #terraform login
+        terraform init
+        terraform plan -out=tfplan -input=false -var="do_token=${{ secrets.TF_API_DO }}"
 
-            - name: "Upload plan"
-              uses: actions/upload-artifact@v4
-              with:
-                  name: tfplan
-                  path: tfplan
+    - name: "Upload plan"
+      uses: actions/upload-artifact@v4
+      with:
+        name: tfplan
+        path: tfplan
 
-    terraform_apply_prod:
-        needs: terraform_plan_prod
-        # backen terraform cloud
-        if: github.ref == 'refs/heads/main'
-        name: "Deploy to Production"
-        runs-on: ubuntu-latest
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v4
+  terraform_apply_prod:
+    needs: terraform_plan_prod
+    # backen terraform cloud
+    if: github.ref == 'refs/heads/main'
+    name: "Deploy to Production"
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-            - name: Setup Terraform
-              uses: hashicorp/setup-terraform@v3
-              with:
-                terraform_version: 1.11.3
-                cli_config_credentials_token: ${{ secrets.TF_API_KEY }}
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.11.3
+        cli_config_credentials_token: ${{ secrets.TF_API_KEY }}
 
-            - name: "Download plan"
-              uses: actions/download-artifact@v4
-              with:
-                  name: tfplan
-                  path: ./downloaded-tfplan
+    - name: "Download plan"
+      uses: actions/download-artifact@v4
+      with:
+        name: tfplan
+        path: ./downloaded-tfplan
 
-            - name: Deploy Prod Configuration
-              run: |
-                #terraform login
-                terraform init
-                terraform apply -auto-approve ./downloaded-tfplan/tfplan
+    - name: Deploy Prod Configuration
+      run: |
+        #terraform login
+        terraform init
+        terraform apply -auto-approve ./downloaded-tfplan/tfplan
