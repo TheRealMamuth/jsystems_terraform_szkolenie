@@ -5,7 +5,7 @@ resource "digitalocean_vpc" "vpc" {
   ip_range    = cidrsubnet(var.base_cidr, 8, random_integer.random_3_octet.result)
 }
 
-# Random variables
+# Random vars
 
 resource "random_string" "random_name" {
   length  = 8
