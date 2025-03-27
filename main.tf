@@ -11,6 +11,7 @@ module "project" {
     description = "This is a group project"
     environment = "Development"
     project_resources = []
+
 }
 
 module "ssh-key" {
