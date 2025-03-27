@@ -12,3 +12,4 @@ resource "aws_route53_record" "subdomain_records" {
   records = [each.value]
 }
 
+
