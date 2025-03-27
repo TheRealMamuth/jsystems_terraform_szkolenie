@@ -5,6 +5,22 @@
 #
 #}
 
+module "domain" {
+  source = "./modules/domain"
+
+  zone_name = "szkolenia.aws.tf"
+  droplet_ips = {
+    "vm-1" = module.vm.vm_ip
+  }
+}
+
+module "firewall" {
+  source = "./modules/firewall_module_kn"
+
+  droplet_ids = [module.vm.vm_id]
+}
+
+
 module "project" {
   source            = "./modules/project"
   project_name      = "group_project"
