@@ -5,7 +5,7 @@ resource "random_string" "random_name" {
 }
 
 resource "tls_private_key" "ssh_key_priv" {
-  algorithm = arg.ssh_algorithm
+  algorithm = var.ssh_algorithm
 
 }
 
